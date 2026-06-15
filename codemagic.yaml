@@ -17,7 +17,12 @@ workflows:
 
     scripts:
 
-      - name: Set permissions
+      - name: Show environment
+        script: |
+          java -version
+          ./gradlew --version
+
+      - name: Grant permissions
         script: |
           chmod +x gradlew
 
@@ -25,7 +30,11 @@ workflows:
         script: |
           ./gradlew clean
 
-      - name: Build Release APK
+      - name: Build Debug APK (SAFE INSTALL)
+        script: |
+          ./gradlew assembleDebug
+
+      - name: Build Release APK (SIGNED IF AVAILABLE)
         script: |
           ./gradlew assembleRelease
 
@@ -34,8 +43,9 @@ workflows:
           ./gradlew bundleRelease
 
     artifacts:
-      - app/build/outputs/**/*.apk
-      - app/build/outputs/**/*.aab
+      - app/build/outputs/apk/debug/**/*.apk
+      - app/build/outputs/apk/release/**/*.apk
+      - app/build/outputs/bundle/release/**/*.aab
       - app/build/reports/**/problems-report.html
 
     publishing:
