@@ -1,6 +1,6 @@
 workflows:
   songify-android:
-    name: SongIfy Android Build
+    name: SongIfy Android CI
 
     max_build_duration: 120
 
@@ -34,7 +34,7 @@ workflows:
         script: |
           ./gradlew assembleDebug
 
-      - name: Build Release APK (SIGNED IF AVAILABLE)
+      - name: Build Release APK (OPTIONAL SIGNED)
         script: |
           ./gradlew assembleRelease
 
