@@ -20,14 +20,14 @@ android {
   }
 
   /**
-   * ✅ ONLY RELEASE SIGNING (SAFE)
+   * ✅ SAFE SIGNING CONFIG (ONLY IF KEYSTORE EXISTS)
    */
   signingConfigs {
     create("release") {
-      val keystorePath = System.getenv("KEYSTORE_PATH")
+      val ksPath = System.getenv("KEYSTORE_PATH")
 
-      if (keystorePath != null && file(keystorePath).exists()) {
-        storeFile = file(keystorePath)
+      if (!ksPath.isNullOrEmpty() && file(ksPath).exists()) {
+        storeFile = file(ksPath)
         storePassword = System.getenv("STORE_PASSWORD")
         keyAlias = System.getenv("KEY_ALIAS") ?: "upload"
         keyPassword = System.getenv("KEY_PASSWORD")
@@ -37,7 +37,10 @@ android {
 
   buildTypes {
 
-    release {
+    /**
+     * 🔥 RELEASE BUILD (SAFE FOR INSTALL)
+     */
+    getByName("release") {
       isMinifyEnabled = false
       isCrunchPngs = false
 
@@ -48,15 +51,20 @@ android {
 
       val ks = System.getenv("KEYSTORE_PATH")
 
-      signingConfig = if (ks != null && file(ks).exists()) {
-        signingConfigs.getByName("release")
-      } else {
-        null   // fallback safe (no crash)
-      }
+      signingConfig =
+        if (!ks.isNullOrEmpty() && file(ks).exists()) {
+          signingConfigs.getByName("release")
+        } else {
+          signingConfig = null   // 👈 IMPORTANT: prevents invalid APK signing
+        }
     }
 
-    debug {
-      // DO NOT define signingConfig (Android default will handle it)
+    /**
+     * 🔥 DEBUG BUILD (SAFE INSTALL ALWAYS)
+     */
+    getByName("debug") {
+      // keep default Android debug signing
+      isDebuggable = true
     }
   }
 
@@ -77,6 +85,9 @@ android {
   }
 }
 
+/**
+ * Secrets (.env support)
+ */
 secrets {
   propertiesFileName = ".env"
   defaultPropertiesFileName = ".env.example"
