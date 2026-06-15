@@ -20,11 +20,12 @@ android {
   }
 
   /**
-   * 🔥 FIX: SAFE SIGNING (Codemagic + Local both works)
+   * ✅ ONLY RELEASE SIGNING (SAFE)
    */
   signingConfigs {
     create("release") {
       val keystorePath = System.getenv("KEYSTORE_PATH")
+
       if (keystorePath != null && file(keystorePath).exists()) {
         storeFile = file(keystorePath)
         storePassword = System.getenv("STORE_PASSWORD")
@@ -32,39 +33,30 @@ android {
         keyPassword = System.getenv("KEY_PASSWORD")
       }
     }
-
-    create("debug") {
-      storeFile = file("${rootDir}/debug.keystore")
-      storePassword = "android"
-      keyAlias = "androiddebugkey"
-      keyPassword = "android"
-    }
   }
 
   buildTypes {
 
-    /**
-     * 🔥 CRITICAL FIX:
-     * If keystore missing → fallback to debug signing
-     */
-    getByName("release") {
+    release {
       isMinifyEnabled = false
       isCrunchPngs = false
+
       proguardFiles(
         getDefaultProguardFile("proguard-android-optimize.txt"),
         "proguard-rules.pro"
       )
 
       val ks = System.getenv("KEYSTORE_PATH")
+
       signingConfig = if (ks != null && file(ks).exists()) {
         signingConfigs.getByName("release")
       } else {
-        signingConfigs.getByName("debug")
+        null   // fallback safe (no crash)
       }
     }
 
-    getByName("debug") {
-      signingConfig = signingConfigs.getByName("debug")
+    debug {
+      // DO NOT define signingConfig (Android default will handle it)
     }
   }
 
@@ -85,9 +77,6 @@ android {
   }
 }
 
-/**
- * Secrets plugin (.env support)
- */
 secrets {
   propertiesFileName = ".env"
   defaultPropertiesFileName = ".env.example"
@@ -105,6 +94,7 @@ dependencies {
   implementation(libs.androidx.compose.ui.graphics)
   implementation(libs.androidx.compose.ui.tooling.preview)
   implementation(libs.androidx.core.ktx)
+
   implementation(libs.androidx.lifecycle.runtime.compose)
   implementation(libs.androidx.lifecycle.runtime.ktx)
   implementation(libs.androidx.lifecycle.viewmodel.compose)
