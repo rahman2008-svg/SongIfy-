@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Outer Headphones Arc -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+        android:pathData="M 32,60 A 22,22 0 0 1 76,60" />
+    <!-- Left ear-cup -->
+    <path
+        android:fillColor="#00F0FF"
+        android:pathData="M 26,52 A 6,6 0 0 1 38,52 L 38,68 A 6,6 0 0 1 26,68 Z" />
+    <!-- Right ear-cup -->
+    <path
+        android:fillColor="#00F0FF"
+        android:pathData="M 70,52 A 6,6 0 0 1 82,52 L 82,68 A 6,6 0 0 1 70,68 Z" />
+    <!-- Center music note -->
+    <path
+        android:fillColor="#00FF87"
+        android:pathData="M 54,36 L 54,58 A 6,6 0 1 1 48,64 L 48,64 Q 50,58 54,58 L 54,46 L 64,46 L 64,36 Z" />
+</vector>

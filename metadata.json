@@ -1,0 +1,8 @@
+{
+  "name": "SongIfy",
+  "description": "A fully offline Android music player similar to Lark Player with modern UI, auto scanning, playlist creation, search, favorites, and basic audio equalizer.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
