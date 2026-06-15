@@ -1,44 +1,35 @@
 workflows:
   songify-android:
-    name: SongIfy Android Build
+    name: SongIfy Android
 
     max_build_duration: 120
 
     environment:
-      flutter: stable
+      java: 17
 
     cache:
       cache_paths:
-        - ~/.pub-cache
         - ~/.gradle/caches
         - ~/.gradle/wrapper
 
     scripts:
-      - name: Flutter Clean
+      - name: Grant permissions
         script: |
-          flutter clean
+          chmod +x gradlew
 
-      - name: Get Packages
+      - name: Build Release APK
         script: |
-          flutter pub get
+          ./gradlew assembleRelease
 
-      - name: Build APK
+      - name: Build Release AAB
         script: |
-          flutter build apk --release
-
-      - name: Build AAB
-        script: |
-          flutter build appbundle --release
+          ./gradlew bundleRelease
 
     artifacts:
-      - build/**/outputs/**/*.apk
-      - build/**/outputs/**/*.aab
-      - build/**/outputs/**/mapping.txt
+      - app/build/outputs/**/*.apk
+      - app/build/outputs/**/*.aab
 
     publishing:
       email:
         recipients:
           - your-email@gmail.com
-        notify:
-          success: true
-          failure: true
