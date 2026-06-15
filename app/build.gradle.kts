@@ -20,7 +20,7 @@ android {
   }
 
   /**
-   * ✅ SAFE SIGNING CONFIG (ONLY IF KEYSTORE EXISTS)
+   * ✅ SAFE SIGNING CONFIG (NO TYPE ERROR)
    */
   signingConfigs {
     create("release") {
@@ -38,7 +38,7 @@ android {
   buildTypes {
 
     /**
-     * 🔥 RELEASE BUILD (SAFE FOR INSTALL)
+     * 🔥 RELEASE (SAFE + NO CRASH + NO INVALID APK)
      */
     getByName("release") {
       isMinifyEnabled = false
@@ -49,21 +49,19 @@ android {
         "proguard-rules.pro"
       )
 
-      val ks = System.getenv("KEYSTORE_PATH")
+      val ksPath = System.getenv("KEYSTORE_PATH")
 
-      signingConfig =
-        if (!ks.isNullOrEmpty() && file(ks).exists()) {
-          signingConfigs.getByName("release")
-        } else {
-          signingConfig = null   // 👈 IMPORTANT: prevents invalid APK signing
-        }
+      if (!ksPath.isNullOrEmpty() && file(ksPath).exists()) {
+        signingConfig = signingConfigs.getByName("release")
+      }
+      // ❌ IMPORTANT: NO else block, NO null assignment
     }
 
     /**
-     * 🔥 DEBUG BUILD (SAFE INSTALL ALWAYS)
+     * 🔥 DEBUG (DEFAULT AND SAFE INSTALL ALWAYS)
      */
     getByName("debug") {
-      // keep default Android debug signing
+      // keep default debug signing
       isDebuggable = true
     }
   }
@@ -86,7 +84,7 @@ android {
 }
 
 /**
- * Secrets (.env support)
+ * Secrets plugin (.env support)
  */
 secrets {
   propertiesFileName = ".env"
