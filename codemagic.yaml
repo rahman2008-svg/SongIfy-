@@ -1,11 +1,14 @@
 workflows:
   songify-android:
-    name: SongIfy Android
+    name: SongIfy Android Build
 
     max_build_duration: 120
 
     environment:
       java: 17
+
+      vars:
+        GRADLE_OPTS: "-Xmx4096m"
 
     cache:
       cache_paths:
@@ -13,9 +16,14 @@ workflows:
         - ~/.gradle/wrapper
 
     scripts:
-      - name: Grant permissions
+
+      - name: Set permissions
         script: |
           chmod +x gradlew
+
+      - name: Clean project
+        script: |
+          ./gradlew clean
 
       - name: Build Release APK
         script: |
@@ -28,8 +36,12 @@ workflows:
     artifacts:
       - app/build/outputs/**/*.apk
       - app/build/outputs/**/*.aab
+      - app/build/reports/**/problems-report.html
 
     publishing:
       email:
         recipients:
-          - your-email@gmail.com
+          - prince.ar.abdur.rahman2008@gmail.com
+        notify:
+          success: true
+          failure: true
